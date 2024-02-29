@@ -16,6 +16,10 @@ setup(
         
         #Launch
         (os.path.join('share', package_name, 'launch'), glob(os.path.join('launch', '*launch.[pxy][yma]*'))),
+
+        #Worlds
+        (os.path.join('share', package_name, 'worlds'), glob(os.path.join('worlds', '*.sdf'))),
+
     ],
     install_requires=['setuptools'],
     zip_safe=True,

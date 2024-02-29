@@ -44,12 +44,14 @@ def generate_launch_description():
     # Directories
     pkg_turtlebot4_ignition_bringup = get_package_share_directory(
         'turtlebot4_ignition_bringup')
+    pkg_diem_gazebo = get_package_share_directory(
+        "diem_gazebo")
 
     # Paths
     ignition_launch = PathJoinSubstitution(
-        [pkg_turtlebot4_ignition_bringup, 'launch', 'ignition.launch.py'])
+        [pkg_diem_gazebo, 'launch', 'ignition.launch.py'])
     robot_spawn_launch = PathJoinSubstitution(
-        [pkg_turtlebot4_ignition_bringup, 'launch', 'turtlebot4_spawn_no_dock.launch.py'])
+        [pkg_diem_gazebo, 'launch', 'turtlebot4_spawn_no_dock.launch.py'])
 
     ignition = IncludeLaunchDescription(
         PythonLaunchDescriptionSource([ignition_launch]),
