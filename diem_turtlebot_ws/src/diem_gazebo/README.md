@@ -1,4 +1,6 @@
 # How to run
+
+## Run Empty Map
 1. ``` source install/setup.bash ```
 2. ``` ros2 launch diem_gazebo turtlebot4_ignition_no_dock.launch.py ```
 
