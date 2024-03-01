@@ -22,6 +22,7 @@ from launch.actions import IncludeLaunchDescription
 from launch_ros.actions import Node
 from launch.launch_description_sources import PythonLaunchDescriptionSource
 from launch.substitutions import LaunchConfiguration, PathJoinSubstitution
+from launch.conditions import IfCondition, LaunchConfigurationEquals
 
 
 ARGUMENTS = [
@@ -48,7 +49,8 @@ def generate_launch_description():
         package="tf2_ros",
         executable="static_transform_publisher",
         arguments=["0", "0", "0", "0", "0", "0", "map", "odom" ],
-        name="diem_map_tf"
+        name="diem_map_tf",
+        condition=LaunchConfigurationEquals("world", "square")
     )
 
     # Directories
@@ -83,6 +85,7 @@ def generate_launch_description():
 
     # Create launch description and add actions
     ld = LaunchDescription(ARGUMENTS)
+    print("******************\n", LaunchConfiguration("world").describe)
     ld.add_action(diem_map_tf_node)
     ld.add_action(ignition)
     ld.add_action(robot_spawn)
