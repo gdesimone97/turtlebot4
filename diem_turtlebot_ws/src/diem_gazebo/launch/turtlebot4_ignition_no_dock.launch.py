@@ -85,7 +85,6 @@ def generate_launch_description():
 
     # Create launch description and add actions
     ld = LaunchDescription(ARGUMENTS)
-    print("******************\n", LaunchConfiguration("world").describe)
     ld.add_action(diem_map_tf_node)
     ld.add_action(ignition)
     ld.add_action(robot_spawn)
