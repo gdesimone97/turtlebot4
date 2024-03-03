@@ -1,0 +1,1 @@
+docker run -p 33890:3389 --rm -it ubuntu22

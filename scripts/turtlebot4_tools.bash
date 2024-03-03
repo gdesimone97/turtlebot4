@@ -2,9 +2,6 @@
 
 sudo apt update
 
-# Installing turtlebot4 libs
-sudo apt install -y ros-humble-turtlebot4-desktop
-
 # Installing Gazebo
 sudo apt install -y ros-dev-tools
 sudo apt install -y wget
@@ -12,4 +9,7 @@ sudo sh -c 'echo "deb http://packages.osrfoundation.org/gazebo/ubuntu-stable `ls
 wget http://packages.osrfoundation.org/gazebo.key -O - | sudo apt-key add -
 sudo apt update
 sudo apt install -y ignition-fortress
+
+# Installing turtlebot4 libs
+sudo apt install -y ros-humble-turtlebot4-desktop
 sudo apt install -y ros-humble-turtlebot4-simulator
