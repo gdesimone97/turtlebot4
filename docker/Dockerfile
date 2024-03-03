@@ -1,4 +1,6 @@
 FROM ubuntu:22.04
+ENV DEBIAN_FRONTEND=noninteractive
+ENV TZ="Europe/Rome"
 
 RUN apt update
 RUN apt install xfce4 xfce4-goodies -y
@@ -19,6 +21,14 @@ RUN git clone https://github.com/gdesimone97/turtlebot4.git
 WORKDIR turtlebot4/scripts
 
 USER root
+
+#Configure Timezone
+RUN apt-get update && \
+    apt-get install -yq tzdata && \
+    ln -fs /usr/share/zoneinfo/Europe/Rome /etc/localtime && \
+    dpkg-reconfigure -f noninteractive tzdata
+
+RUN bash install_locales.bash
 RUN bash ros2_humble_install.bash
 RUN bash ros2-tools.bash
 RUN bash turtlebot4_tools.bash
