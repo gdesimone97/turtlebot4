@@ -14,7 +14,7 @@ RUN adduser xrdp ssl-cert
 
 USER mivia
 WORKDIR /home/mivia/
-ADD run.sh .
+ADD run_xrdp.sh .
 RUN echo "xfce4-session" | tee .xsession
 
 RUN git clone https://github.com/gdesimone97/turtlebot4.git
