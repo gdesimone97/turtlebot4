@@ -6,7 +6,7 @@ RUN apt update
 RUN apt install xfce4 xfce4-goodies -y
 RUN apt install xrdp -y
 RUN apt install -y nano gedit net-tools
-RUN apt install -y sudo iptables git
+RUN apt install -y sudo iptables git python3-pip
 
 RUN useradd -m -p $(openssl passwd -1 mivia) -s /bin/bash mivia
 RUN usermod -aG sudo mivia
@@ -36,4 +36,10 @@ RUN bash turtlebot4_tools.bash
 RUN update-alternatives --set x-terminal-emulator /usr/bin/xfce4-terminal.wrapper
 
 USER mivia
+
+WORKDIR /home/mivia
+RUN echo "source /opt/ros/humble/setup.bash" >> .bashrc
+RUN echo "source /usr/share/colcon_cd/function/colcon_cd.sh" >> .bashrc
+RUN echo "export _colcon_cd_root=/opt/ros/humble/" >> .bashrc
+RUN echo "source /usr/share/colcon_argcomplete/hook/colcon-argcomplete.bash" >> .bashrc
 CMD ["/bin/bash"]
