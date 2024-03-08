@@ -20,7 +20,9 @@ setup(
     tests_require=['pytest'],
     entry_points={
         'console_scripts': [
-            "simple_nav = nav_pkg.simple_nav:main"
+            "simple_nav = nav_pkg.simple_nav:main",
+            "nav_step = nav_pkg.nav_step:main",
+            "obj_avoidance = nav_pkg.obstacle_avoidance:main",
         ],
     },
 )
