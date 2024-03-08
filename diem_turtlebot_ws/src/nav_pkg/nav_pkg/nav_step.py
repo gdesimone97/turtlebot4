@@ -23,12 +23,7 @@ class Handler(Node):
         msg.angular.z = 1.57 * factor #rad/s
         self.msg = msg
         self.ok = True
-        a = self.get_clock().now().nanoseconds
-        while True:
-            b = self.get_clock().now().nanoseconds
-            diff = (b -a) * 1e-9
-            if diff> 1: 
-                break
+        self.sleep(1)
         self.ok = False
 
     def go(self):
@@ -36,12 +31,7 @@ class Handler(Node):
         msg.linear.x = 0.25 #m/s
         self.msg = msg
         self.ok = True
-        a = self.get_clock().now().nanoseconds
-        while True:
-            b = self.get_clock().now().nanoseconds
-            diff = (b -a) * 1e-9
-            if diff > 4.0: 
-                break
+        self.sleep(4)
         self.ok = False
 
     def stop(self):
@@ -49,26 +39,22 @@ class Handler(Node):
         msg.linear.x = 0.0 #m/s
         self.msg = msg
         self.ok = True
-        a = self.get_clock().now().nanoseconds
-        while True:
-            b = self.get_clock().now().nanoseconds
-            diff = (b -a) * 1e-9
-            if diff > 1.0: 
-                break
+        self.sleep(1)
         self.ok = False
     
+    def sleep(self, time_seconds):
+        self.get_clock().sleep_for(Duration(seconds=time_seconds)) #sleep for <time_seconds> seconds
+    
     def loop(self):
-        self.get_clock().sleep_for(Duration(seconds=1))
         self.get_logger().info("Node starting...")
-        #self.rate_stop.sleep()
+        self.sleep(1)
         self.get_logger().info("Moving forward...")
-        self.go()
-        #self.rate_stop.sleep()
+        self.go() #Moving forward for 4 seconds
         self.get_logger().info("Rotating...")
-        self.rotate()
-        #self.rate_stop.sleep()
+        self.rotate() #Rotating for 1 seconds
         self.get_logger().info("Moving forward...")
-        self.go()
+        self.go() #Move forward for 4 seconds
+        self.get_logger().info("Stopping...")
         self.stop()
         self.get_logger().info("End!")
 
@@ -79,15 +65,14 @@ def main():
     param = rclpy.Parameter("use_sim_time", rclpy.Parameter.Type.BOOL, True)
     handller.set_parameters([param])
     executor.add_node(handller)
-    executor.create_task(handller.move_callback)
+    executor.create_task(handller.move_callback) #Run a thread with callable object given as input
     executor.create_task(handller.loop)
     try:
-        executor.spin()
+        executor.spin() #Running loop - bocking call
     except KeyboardInterrupt:
         pass
 
     handller.destroy_node()
-    rclpy.shutdown()
 
 if __name__ == "__main__":
     main()
