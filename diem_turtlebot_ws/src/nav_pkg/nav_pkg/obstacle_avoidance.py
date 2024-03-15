@@ -4,9 +4,7 @@ from rclpy.node import Node
 from rclpy.logging import LoggingSeverity
 from geometry_msgs.msg import Twist
 from sensor_msgs.msg import LaserScan
-from threading import Thread
-from rclpy.executors import MultiThreadedExecutor
-from time import sleep
+from rclpy.executors import SingleThreadedExecutor, MultiThreadedExecutor
 
 class Handler(Node):
     def __init__(self):
@@ -15,35 +13,22 @@ class Handler(Node):
         self.th_front = self.th_side = 1.5
         self.cmd_pub = self.create_publisher(Twist, "/cmd_vel", 10) #Publisher
         self.scan_pub = self.create_subscription(LaserScan, "/scan", self.scan_callback, 10) #Laser Scan Subscriber
-        self.ok = False
-        #self.create_timer(0.1, self.th_callback)
-        Thread(target=self.th_callback, daemon=True).start()
-        self.rate = self.create_rate(1)
-
-    def th_callback(self):
-        while rclpy.ok():
-            if self.ok:
-                self.cmd_pub.publish(self.msg)
 
     def rotate(self, clockwise=True):
         factor = -1 if clockwise else 1
         msg = Twist()
         msg.angular.z = 1.0 * factor #rad/s
-        self.msg = msg
-        self.ok = True
-        self.rate.sleep()
-        self.ok = False
+        self.cmd_pub.publish(msg)
 
     def go(self):
         msg = Twist()
         msg.linear.x = 0.31 #m/s
-        self.rate.sleep()
         self.cmd_pub.publish(msg)
 
     def scan_callback(self, msg: LaserScan):
-        front = msg.ranges[157]
-        right = msg.ranges[0]
-        left = msg.ranges[314]
+        front = msg.ranges[157] #Frontal lidar data
+        right = msg.ranges[0] #Right lidar data
+        left = msg.ranges[314] #Left lidar data
         self.get_logger().debug(f"front: {front}\nright: {right}\nleft: {left}")
         if front > self.th_front and right > self.th_side and left > self.th_side:
             self.go()
@@ -53,12 +38,16 @@ class Handler(Node):
 
 def main():
     rclpy.init()
-    executor = MultiThreadedExecutor()
+    param = rclpy.Parameter("use_sim_time", rclpy.Parameter.Type.BOOL, True) #Creating 'use_sim_time' node parameter
+    executor = SingleThreadedExecutor()
     handller = Handler()
-    executor.add_node(handller)
+    handller.set_parameters([param]) #Setting 'use_sim_time' node parameter
+    executor.add_node(handller) #Adding node to executor
 
-    while rclpy.ok():
-        executor.spin()
+    try:
+        executor.spin() #Running loop - bocking call
+    except KeyboardInterrupt:
+        pass
 
     handller.destroy_node()
     rclpy.shutdown()
