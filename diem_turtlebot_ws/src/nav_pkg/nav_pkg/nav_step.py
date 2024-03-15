@@ -7,9 +7,9 @@ from rclpy.clock import Duration
 
 class Handler(Node):
     def __init__(self):
-        super().__init__("obstacle_avoidance_node") #Init node
+        super().__init__("nav_step_node") #Init node
         self.get_logger().set_level(LoggingSeverity.DEBUG)
-        self.create_timer(0.1, self.move_callback) #Create a timer
+        self.create_timer(0.1, self.move_callback) #Creating a timer
         self.cmd_pub = self.create_publisher(Twist, "/cmd_vel", 10) #Publisher
         self.ok = False
 
