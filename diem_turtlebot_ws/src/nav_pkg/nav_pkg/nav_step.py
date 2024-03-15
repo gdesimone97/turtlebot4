@@ -9,13 +9,13 @@ class Handler(Node):
     def __init__(self):
         super().__init__("obstacle_avoidance_node") #Init node
         self.get_logger().set_level(LoggingSeverity.DEBUG)
+        self.create_timer(0.1, self.move_callback) #Create a timer
         self.cmd_pub = self.create_publisher(Twist, "/cmd_vel", 10) #Publisher
         self.ok = False
 
     def move_callback(self):
-        while rclpy.ok():
-            if self.ok:
-                self.cmd_pub.publish(self.msg)
+        if self.ok:
+            self.cmd_pub.publish(self.msg)
 
     def rotate(self, clockwise=True):
         factor = -1 if clockwise else 1
@@ -62,11 +62,10 @@ def main():
     rclpy.init()
     executor = MultiThreadedExecutor()
     handller = Handler()
-    param = rclpy.Parameter("use_sim_time", rclpy.Parameter.Type.BOOL, True)
-    handller.set_parameters([param])
-    executor.add_node(handller)
-    executor.create_task(handller.move_callback) #Run a thread with callable object given as input
-    executor.create_task(handller.loop)
+    param = rclpy.Parameter("use_sim_time", rclpy.Parameter.Type.BOOL, True) #Creating 'use_sim_time' node parameter
+    handller.set_parameters([param]) #Setting 'use_sim_time' node parameter
+    executor.add_node(handller) #Adding node to executor
+    executor.create_task(handller.loop) #Creating a task with callable given as input
     try:
         executor.spin() #Running loop - bocking call
     except KeyboardInterrupt:
