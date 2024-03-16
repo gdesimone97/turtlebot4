@@ -23,6 +23,7 @@ setup(
             "simple_nav = nav_pkg.simple_nav:main",
             "nav_step = nav_pkg.nav_step:main",
             "obj_avoidance = nav_pkg.obstacle_avoidance:main",
+            "odom = nav_pkg.odom:main",
         ],
     },
 )
