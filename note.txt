@@ -23,3 +23,6 @@ ros2 service call /slam_toolbox/save_map slam_toolbox/srv/SaveMap "name:
 ros2 launch turtlebot4_navigation localization.launch.py map:=test.yaml
 ros2 launch turtlebot4_navigation nav2.launch.py
 ros2 launch turtlebot4_viz view_robot.launch.py
+
+#Simulation
+ros2 launch diem_gazebo turtlebot4_ignition_no_dock.launch.py world:=square
