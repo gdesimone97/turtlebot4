@@ -1,5 +1,7 @@
 #!/bin/bash
 
+source net_setup.bash
+
 read -p "RPi4 IP address: " ip
 
 read -p "Discovery Server IP [$ip]: " discovery_ip
@@ -27,7 +29,11 @@ fi
 sudo mkdir -p /etc/turtlebot4_discovery/
 
 # Clone turtlebot4_setup and install files
-git clone -b humble https://github.com/turtlebot/turtlebot4_setup.git /tmp/turtlebot4_setup/ &> /dev/null
+
+if [ ! -d "/tmp/turtlebot4_setup_orig/" ]; then
+	git clone -b humble https://github.com/turtlebot/turtlebot4_setup.git /tmp/turtlebot4_setup_orig/
+fi
+cp -rf /tmp/turtlebot4_setup_orig/ /tmp/turtlebot4_setup/
 sudo mv /tmp/turtlebot4_setup/turtlebot4_discovery/ip_route.sh /usr/local/sbin/
 sudo mv /tmp/turtlebot4_setup/turtlebot4_discovery/ip_route.service /etc/systemd/system/
 sudo mv /tmp/turtlebot4_setup/turtlebot4_discovery/fastdds_discovery_super_client.xml /etc/turtlebot4_discovery/
