@@ -1,0 +1,1 @@
+docker run -P -v /tmp/.X11-unix/:/tmp/.X11-unix --rm -e DISPLAY=$DISPLAY -it turtlebot4
