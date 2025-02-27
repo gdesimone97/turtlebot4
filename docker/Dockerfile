@@ -24,8 +24,11 @@ RUN bash install_locales.bash
 RUN bash ros2_humble_install.bash
 RUN bash ros2-tools.bash
 RUN bash turtlebot4_tools.bash
-USER mivia
 
+RUN apt install -y xserver-xorg
+RUN dpkg-reconfigure xserver-xorg
+
+USER mivia
 WORKDIR /home/mivia
 RUN echo "source /opt/ros/humble/setup.bash" >> .bashrc
 RUN echo "source /usr/share/colcon_cd/function/colcon_cd.sh" >> .bashrc
@@ -33,6 +36,6 @@ RUN echo "export _colcon_cd_root=/opt/ros/humble/" >> .bashrc
 RUN echo "source /usr/share/colcon_argcomplete/hook/colcon-argcomplete.bash" >> .bashrc
 
 EXPOSE 7400 7401
-EXPOSE 7410-74157
+EXPOSE 7410-7415
 
 CMD ["/bin/bash"]
