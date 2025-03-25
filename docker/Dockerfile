@@ -40,6 +40,10 @@ ADD ntp.conf /etc/ntp.conf
 
 USER mivia
 
+RUN apt install -y xserver-xorg
+RUN dpkg-reconfigure xserver-xorg
+
+USER mivia
 WORKDIR /home/mivia
 RUN echo "source /opt/ros/humble/setup.bash" >> .bashrc
 RUN echo "source /usr/share/colcon_cd/function/colcon_cd.sh" >> .bashrc
