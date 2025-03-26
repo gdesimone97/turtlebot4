@@ -26,22 +26,29 @@ RUN bash ros2-tools.bash
 RUN bash turtlebot4_tools.bash
 RUN apt install -y ntp
 
+WORKDIR /opt/ros/humble
+RUN find . -name irobot_create_ignition_toolbox -type d -exec rm -rv {} +
+RUN find . -name irobot_create_nodes -type d -exec rm -rv {} +
+RUN find . -name irobot_create_ignition_bringup -type d -exec rm -rv {} +
+RUN find . -name irobot_create_common_bringup -type d -exec rm -rv {} +
+RUN find . -name irobot_create_toolbox -type d -exec rm -rv {} +
+RUN find . -name irobot_create_description -type d -exec rm -rv {} +
+
 RUN apt update
-SHELL [ "/bin/bash" , "-c"]
 WORKDIR /home/mivia/turtlebot4/diem_turtlebot_ws/src
-RUN git clone -b humble https://github.com/iRobotEducation/create3_sim.git
+SHELL [ "/bin/bash" , "-c"]
+RUN git clone -b humble https://github.com/gdesimone97/create3_sim.git
 WORKDIR ..
 ENV IGNITION_VERSION=fortress
 RUN source /opt/ros/humble/setup.bash && rosdep init && rosdep update
 RUN source /opt/ros/humble/setup.bash && rosdep install --ignore-src --rosdistro humble --from-path src -yi
-RUN source /opt/ros/humble/setup.bash && colcon build --symlink-install
+RUN source /opt/ros/humble/setup.bash && colcon build --symlink-install --allow-overriding irobot_create_common_bringup irobot_create_description irobot_create_ignition_bringup irobot_create_ignition_toolbox irobot_create_nodes irobot_create_toolbox
 
 ADD ntp.conf /etc/ntp.conf
-
-USER mivia
-
-RUN apt install -y xserver-xorg
+RUN  apt install -y xserver-xorg
 RUN dpkg-reconfigure xserver-xorg
+
+RUN chown -R mivia /home/mivia/turtlebot4/
 
 USER mivia
 WORKDIR /home/mivia
@@ -51,5 +58,6 @@ RUN echo "export _colcon_cd_root=/opt/ros/humble/" >> .bashrc
 RUN echo "source /usr/share/colcon_argcomplete/hook/colcon-argcomplete.bash" >> .bashrc
 
 ENV ROS_LOCALHOST_ONLY=1
+ENV ROS_DOMAIN_ID=0
 
 CMD ["/bin/bash"]
