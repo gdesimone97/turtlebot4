@@ -53,7 +53,11 @@ ENV IGNITION_VERSION=fortress
 RUN source /opt/ros/humble/setup.bash && rosdep install --ignore-src --rosdistro humble --from-path src -yi
 RUN source /opt/ros/humble/setup.bash && colcon build --symlink-install --allow-overriding irobot_create_common_bringup irobot_create_description irobot_create_ignition_bringup irobot_create_ignition_toolbox irobot_create_nodes irobot_create_toolbox
 ADD "https://www.random.org/cgi-bin/randbyte?nbytes=10&format=h" /tmp/skipcache
+WORKDIR /home/mivia/turtlebot4/diem_turtlebot_ws/src/create3_sim
 RUN git pull
+WORKDIR /home/mivia/turtlebot4/
+RUN git pull
+WORKDIR /home/mivia/turtlebot4/diem_turtlebot_ws/
 RUN source /opt/ros/humble/setup.bash && colcon build --symlink-install --allow-overriding irobot_create_common_bringup irobot_create_description irobot_create_ignition_bringup irobot_create_ignition_toolbox irobot_create_nodes irobot_create_toolbox
 
 USER mivia
