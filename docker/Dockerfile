@@ -59,6 +59,6 @@ RUN echo "source /usr/share/colcon_argcomplete/hook/colcon-argcomplete.bash" >> 
 
 ENV ROS_LOCALHOST_ONLY=1
 ENV ROS_DOMAIN_ID=0
-ENV LIBGL_ALWAYS_SOFTWARE=true
+#ENV LIBGL_ALWAYS_SOFTWARE=true #Uncomment to disable GPU
 
 CMD ["/bin/bash"]
