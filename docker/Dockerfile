@@ -1,4 +1,4 @@
-FROM ubuntu:22.04 AS ros_base
+FROM ubuntu:22.04
 ENV DEBIAN_FRONTEND=noninteractive
 ENV TZ="Europe/Rome"
 
@@ -32,8 +32,6 @@ RUN dpkg-reconfigure xserver-xorg
 
 RUN chown -R mivia /home/mivia/turtlebot4/
 
-FROM scratch as turtlebot
-COPY --from=ros_base / /
 SHELL [ "/bin/bash" , "-c"]
 
 # WORKDIR /opt/ros/humble
