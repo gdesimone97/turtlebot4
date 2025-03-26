@@ -1,1 +1,1 @@
-docker build . -f Dockerfile -t mivia_turtlebot4 --progress=plain
+docker build . -f Dockerfile -t mivia_turtlebot4

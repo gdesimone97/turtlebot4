@@ -1,4 +1,4 @@
-FROM ubuntu:22.04
+FROM ubuntu:22.04 AS ros_base
 ENV DEBIAN_FRONTEND=noninteractive
 ENV TZ="Europe/Rome"
 
@@ -24,31 +24,37 @@ RUN bash install_locales.bash
 RUN bash ros2_humble_install.bash
 RUN bash ros2-tools.bash
 RUN bash turtlebot4_tools.bash
-RUN apt install -y ntp
-
-WORKDIR /opt/ros/humble
-RUN find . -name irobot_create_ignition_toolbox -type d -exec rm -rv {} +
-RUN find . -name irobot_create_nodes -type d -exec rm -rv {} +
-RUN find . -name irobot_create_ignition_bringup -type d -exec rm -rv {} +
-RUN find . -name irobot_create_common_bringup -type d -exec rm -rv {} +
-RUN find . -name irobot_create_toolbox -type d -exec rm -rv {} +
-RUN find . -name irobot_create_description -type d -exec rm -rv {} +
-
-RUN apt update
-WORKDIR /home/mivia/turtlebot4/diem_turtlebot_ws/src
 SHELL [ "/bin/bash" , "-c"]
-RUN git clone -b humble https://github.com/gdesimone97/create3_sim.git
-WORKDIR ..
-ENV IGNITION_VERSION=fortress
 RUN source /opt/ros/humble/setup.bash && rosdep init && rosdep update
-RUN source /opt/ros/humble/setup.bash && rosdep install --ignore-src --rosdistro humble --from-path src -yi
-RUN source /opt/ros/humble/setup.bash && colcon build --symlink-install --allow-overriding irobot_create_common_bringup irobot_create_description irobot_create_ignition_bringup irobot_create_ignition_toolbox irobot_create_nodes irobot_create_toolbox
 
-ADD ntp.conf /etc/ntp.conf
 RUN  apt install -y xserver-xorg
 RUN dpkg-reconfigure xserver-xorg
 
 RUN chown -R mivia /home/mivia/turtlebot4/
+
+FROM scratch as turtlebot
+COPY --from=ros_base / /
+SHELL [ "/bin/bash" , "-c"]
+
+# WORKDIR /opt/ros/humble
+# RUN find . -name irobot_create_ignition_toolbox -type d -exec rm -rv {} +
+# RUN find . -name irobot_create_nodes -type d -exec rm -rv {} +
+# RUN find . -name irobot_create_ignition_bringup -type d -exec rm -rv {} +
+# RUN find . -name irobot_create_common_bringup -type d -exec rm -rv {} +
+# RUN find . -name irobot_create_toolbox -type d -exec rm -rv {} +
+# RUN find . -name irobot_create_description -type d -exec rm -rv {} +
+
+RUN apt update
+WORKDIR /home/mivia/turtlebot4/diem_turtlebot_ws/src
+RUN git config --global --add safe.directory /home/mivia/turtlebot4
+RUN git clone -b humble https://github.com/gdesimone97/create3_sim.git
+WORKDIR ..
+ENV IGNITION_VERSION=fortress
+RUN source /opt/ros/humble/setup.bash && rosdep install --ignore-src --rosdistro humble --from-path src -yi
+RUN source /opt/ros/humble/setup.bash && colcon build --symlink-install --allow-overriding irobot_create_common_bringup irobot_create_description irobot_create_ignition_bringup irobot_create_ignition_toolbox irobot_create_nodes irobot_create_toolbox
+ADD "https://www.random.org/cgi-bin/randbyte?nbytes=10&format=h" /tmp/skipcache
+RUN git pull
+RUN source /opt/ros/humble/setup.bash && colcon build --symlink-install --allow-overriding irobot_create_common_bringup irobot_create_description irobot_create_ignition_bringup irobot_create_ignition_toolbox irobot_create_nodes irobot_create_toolbox
 
 USER mivia
 WORKDIR /home/mivia
